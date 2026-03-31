@@ -59,25 +59,40 @@ class DeskScene extends StatelessWidget {
                   ),
                   child: event == null
                       ? const Text('暂时安全，但你知道这只是暴风雨前的宁静。')
-                      : Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (deskTitle != null)
-                              Text(
-                                deskTitle,
-                                style: const TextStyle(fontWeight: FontWeight.w700),
+                      : LayoutBuilder(
+                          builder: (context, constraints) {
+                            return SingleChildScrollView(
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  minHeight: constraints.maxHeight,
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    if (deskTitle != null)
+                                      Text(
+                                        deskTitle,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                    if (event!.secondaryLabel != null &&
+                                        !isPhoneEvent) ...[
+                                      const SizedBox(height: 8),
+                                      Text(event!.secondaryLabel!),
+                                    ],
+                                    if (!isPhoneEvent && !isBossEvent) ...[
+                                      const SizedBox(height: 16),
+                                      ElevatedButton(
+                                        onPressed: primaryAction,
+                                        child: Text(event!.primaryActionLabel),
+                                      ),
+                                    ],
+                                  ],
+                                ),
                               ),
-                            if (event!.secondaryLabel != null && !isPhoneEvent) ...[
-                              const SizedBox(height: 8),
-                              Text(event!.secondaryLabel!),
-                            ],
-                            const Spacer(),
-                            if (!isPhoneEvent && !isBossEvent)
-                              ElevatedButton(
-                                onPressed: primaryAction,
-                                child: Text(event!.primaryActionLabel),
-                              ),
-                          ],
+                            );
+                          },
                         ),
                 ),
               ),

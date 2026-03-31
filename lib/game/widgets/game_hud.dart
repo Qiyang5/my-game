@@ -25,7 +25,7 @@ class GameHud extends StatelessWidget {
             ? _warningColor
             : null;
     final statusLabel = isDangerMode
-        ? '老板贴脸中'
+        ? '高压处理中'
         : survivalValue < 40
             ? '工位快炸了'
             : '还能顶住';

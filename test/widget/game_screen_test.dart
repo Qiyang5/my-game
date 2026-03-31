@@ -74,6 +74,22 @@ void main() {
     expect(dangerBar.color, const Color(0xFFD92D20));
   });
 
+  testWidgets('uses generic danger copy for non-boss high pressure events', (
+    tester,
+  ) async {
+    final controller = GameSessionController(
+      schedule: EventSchedule.buildDefault(),
+    );
+    controller.advanceToSecond(22);
+
+    await tester.pumpWidget(
+      MaterialApp(home: GameScreen(controller: controller, onFinished: (_) {})),
+    );
+
+    expect(find.text('高压处理中'), findsOneWidget);
+    expect(find.text('老板贴脸中'), findsNothing);
+  });
+
   testWidgets('calls onFinished when the timer-driven session ends', (
     tester,
   ) async {
