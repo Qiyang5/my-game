@@ -20,32 +20,45 @@ class GameSessionController {
 
   void advanceToSecond(int elapsedSecond) {
     final nextRemaining = 45 - elapsedSecond;
-    _state = _state.copyWith(
-      remainingSeconds: nextRemaining.clamp(0, 45),
-      isGameOver: nextRemaining <= 0 || _state.survivalValue <= 0,
-    );
+    _state = _state.copyWith(remainingSeconds: nextRemaining.clamp(0, 45));
 
-    if (_state.isGameOver) return;
-
-    if (_state.activeEvent != null &&
+    while (!_state.isGameOver &&
+        _state.activeEvent != null &&
         elapsedSecond > _state.activeEvent!.deadlineSecond) {
-      _state = _state.copyWith(
-        survivalValue: (_state.survivalValue - 20).clamp(0, 100),
-        missedEvents: _state.missedEvents + 1,
-        clearActiveEvent: true,
-        isGameOver: _state.survivalValue - 20 <= 0,
-      );
+      _missActiveEvent();
     }
 
-    if (_state.activeEvent == null &&
-        _cursor < _schedule.length &&
-        elapsedSecond >= _schedule[_cursor].triggerSecond) {
-      _state = _state.copyWith(activeEvent: _schedule[_cursor]);
-      _cursor += 1;
+    while (!_state.isGameOver &&
+        _state.activeEvent == null &&
+        _cursor < _schedule.length) {
+      final nextEvent = _schedule[_cursor];
+      if (elapsedSecond > nextEvent.deadlineSecond) {
+        _cursor += 1;
+        _state = _state.copyWith(activeEvent: nextEvent);
+        _missActiveEvent();
+        continue;
+      }
+
+      if (elapsedSecond >= nextEvent.triggerSecond) {
+        _state = _state.copyWith(activeEvent: nextEvent);
+        _cursor += 1;
+      }
+
+      break;
     }
+
+    final isGameOver = nextRemaining <= 0 || _state.survivalValue <= 0;
+    _state = _state.copyWith(
+      isGameOver: isGameOver,
+      clearActiveEvent: isGameOver,
+    );
   }
 
   void submit(GameInputType inputType) {
+    if (_state.isGameOver) {
+      return;
+    }
+
     final activeEvent = _state.activeEvent;
     if (activeEvent == null || inputType != activeEvent.inputType) {
       _state = _state.copyWith(
@@ -59,6 +72,16 @@ class GameSessionController {
       score: _state.score + (activeEvent.isHighPressure ? 15 : 10),
       completedEvents: _state.completedEvents + 1,
       clearActiveEvent: true,
+    );
+  }
+
+  void _missActiveEvent() {
+    final nextSurvival = (_state.survivalValue - 20).clamp(0, 100);
+    _state = _state.copyWith(
+      survivalValue: nextSurvival,
+      missedEvents: _state.missedEvents + 1,
+      clearActiveEvent: true,
+      isGameOver: nextSurvival <= 0,
     );
   }
 }
