@@ -31,6 +31,23 @@ void main() {
     expect(find.text('按住装忙'), findsOneWidget);
   });
 
+  testWidgets('boss warning action resolves the boss event', (tester) async {
+    final controller = GameSessionController(
+      schedule: EventSchedule.buildDefault(),
+    );
+    controller.advanceToSecond(33);
+
+    await tester.pumpWidget(
+      MaterialApp(home: GameScreen(controller: controller, onFinished: (_) {})),
+    );
+
+    await tester.tap(find.widgetWithText(ElevatedButton, '按住装忙'));
+    await tester.pump();
+
+    expect(controller.state.activeEvent, isNull);
+    expect(controller.state.score, 15);
+  });
+
   testWidgets('calls onFinished when the timer-driven session ends', (
     tester,
   ) async {

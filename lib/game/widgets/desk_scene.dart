@@ -21,6 +21,11 @@ class DeskScene extends StatelessWidget {
   Widget build(BuildContext context) {
     final isPhoneEvent = event?.type == GameEventType.deliveryCall;
     final isBossEvent = event?.type == GameEventType.bossPatrol;
+    final primaryAction = event?.inputType == GameInputType.tap
+        ? onTapAction
+        : event?.inputType == GameInputType.longPress
+            ? onLongPressAction
+            : onDragAction;
     final deskTitle = isBossEvent ? '危险窗口还挂在桌面上' : event?.label;
     final phoneTitle = isPhoneEvent
         ? (event?.secondaryLabel ?? event?.label ?? '暂无来电')
@@ -69,11 +74,7 @@ class DeskScene extends StatelessWidget {
                             const Spacer(),
                             if (!isPhoneEvent && !isBossEvent)
                               ElevatedButton(
-                                onPressed: event!.inputType == GameInputType.tap
-                                    ? onTapAction
-                                    : event!.inputType == GameInputType.longPress
-                                        ? onLongPressAction
-                                        : onDragAction,
+                                onPressed: primaryAction,
                                 child: Text(event!.primaryActionLabel),
                               ),
                           ],
@@ -96,7 +97,7 @@ class DeskScene extends StatelessWidget {
           warningText: isBossEvent ? event!.label : '',
           actionLabel: isBossEvent ? event!.primaryActionLabel : '',
           visible: isBossEvent,
-          onPressed: onLongPressAction,
+          onPressed: primaryAction,
         ),
       ],
     );
