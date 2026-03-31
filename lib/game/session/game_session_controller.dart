@@ -85,10 +85,9 @@ class GameSessionController {
     required int bestScore,
   }) {
     final survivedSeconds = 45 - _state.remainingSeconds;
-    final title = _state.score >= 60
-        ? '摸鱼艺术家'
-        : (_state.score >= 30 ? '背锅特种兵' : '工位实习生');
-    final summary = '你今天成功混过了 ${_state.completedEvents} 次职场危机。';
+    final title =
+        _state.score >= 60 ? '摸鱼艺术家' : (_state.score >= 30 ? '背锅特种兵' : '工位实习生');
+    final summary = _buildSummary();
 
     return GameResult(
       score: _state.score,
@@ -99,6 +98,25 @@ class GameSessionController {
       isNewHighScore: isNewHighScore,
       bestScore: bestScore,
     );
+  }
+
+  String _buildSummary() {
+    final completedEvents = _state.completedEvents;
+    final missedEvents = _state.missedEvents;
+
+    if (_state.score >= 75 && missedEvents <= 1) {
+      return '你成功顶住了 $completedEvents 次工位危机，但最后还是倒在老板回头杀。';
+    }
+
+    if (_state.score >= 45 && missedEvents <= 2) {
+      return '你扛住了 $completedEvents 次突发事故，差一点就能把这份翻车报告甩给隔壁工位。';
+    }
+
+    if (missedEvents >= 1) {
+      return '你只救回了 $completedEvents 次工位危机，$missedEvents 次翻车已经够老板把事故复盘贴满全办公室。';
+    }
+
+    return '你勉强处理了 $completedEvents 次工位危机，可惜绩效还没来得及写就先塌房了。';
   }
 
   void _missActiveEvent() {
