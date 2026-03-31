@@ -22,5 +22,6 @@ void main() {
     expect(find.text('摸鱼艺术家'), findsOneWidget);
     expect(find.text('本局得分 88'), findsOneWidget);
     expect(find.textContaining('新纪录'), findsOneWidget);
+    expect(find.textContaining('再来一局'), findsOneWidget);
   });
 }

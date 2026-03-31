@@ -8,5 +8,6 @@ void main() {
 
     expect(find.text('工位求生'), findsOneWidget);
     expect(find.widgetWithText(ElevatedButton, '开始摸鱼求生'), findsOneWidget);
+    expect(find.textContaining('45 秒内活过老板巡逻'), findsOneWidget);
   });
 }
