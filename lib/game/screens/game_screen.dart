@@ -1,5 +1,6 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:my_game/game/models/game_event.dart';
 import 'package:my_game/game/session/game_session_controller.dart';
 import 'package:my_game/game/widgets/event_panel.dart';
 import 'package:my_game/game/widgets/game_hud.dart';
@@ -19,10 +20,64 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
-  void _submit(GameInputType inputType) {
-    setState(() {
-      widget.controller.submit(inputType);
+  Timer? _timer;
+  int _elapsed = 0;
+  bool _didFinish = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scheduleFinishCheck();
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      setState(() {
+        _elapsed += 1;
+        widget.controller.advanceToSecond(_elapsed);
+      });
+      _emitResultIfNeeded();
     });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  void _emitResultIfNeeded() {
+    if (_didFinish || !widget.controller.state.isGameOver) {
+      return;
+    }
+
+    _didFinish = true;
+    widget.onFinished(widget.controller);
+  }
+
+  void _scheduleFinishCheck() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || _didFinish) {
+        return;
+      }
+
+      _emitResultIfNeeded();
+      if (!_didFinish) {
+        _scheduleFinishCheck();
+      }
+    });
+  }
+
+  void _submitTap() {
+    setState(widget.controller.submitTap);
+    _emitResultIfNeeded();
+  }
+
+  void _submitLongPress() {
+    setState(widget.controller.submitLongPress);
+    _emitResultIfNeeded();
+  }
+
+  void _submitDrag() {
+    setState(widget.controller.submitDrag);
+    _emitResultIfNeeded();
   }
 
   @override
@@ -45,9 +100,9 @@ class _GameScreenState extends State<GameScreen> {
               child: Center(
                 child: EventPanel(
                   event: state.activeEvent,
-                  onTapAction: () => _submit(GameInputType.tap),
-                  onLongPressAction: () => _submit(GameInputType.longPress),
-                  onDragAction: () => _submit(GameInputType.drag),
+                  onTapAction: _submitTap,
+                  onLongPressAction: _submitLongPress,
+                  onDragAction: _submitDrag,
                 ),
               ),
             ),

@@ -54,4 +54,13 @@ void main() {
     expect(controller.state.completedEvents, 0);
     expect(controller.state.activeEvent, isNull);
   });
+
+  test('game is over after 45 seconds elapsed', () {
+    final controller = GameSessionController(schedule: EventSchedule.buildDefault());
+
+    controller.advanceToSecond(45);
+
+    expect(controller.state.isGameOver, isTrue);
+    expect(controller.state.remainingSeconds, 0);
+  });
 }

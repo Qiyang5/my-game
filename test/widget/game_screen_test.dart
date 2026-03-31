@@ -17,4 +17,23 @@ void main() {
     expect(find.textContaining('群里突然有人'), findsOneWidget);
     expect(find.text('分数 0'), findsOneWidget);
   });
+
+  testWidgets('calls onFinished when the session ends', (tester) async {
+    final controller = GameSessionController(schedule: EventSchedule.buildDefault());
+    GameSessionController? finishedController;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: GameScreen(
+          controller: controller,
+          onFinished: (value) => finishedController = value,
+        ),
+      ),
+    );
+
+    controller.advanceToSecond(45);
+    await tester.pump();
+
+    expect(finishedController, same(controller));
+  });
 }
