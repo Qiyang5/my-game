@@ -18,7 +18,9 @@ void main() {
     expect(find.text('分数 0'), findsOneWidget);
   });
 
-  testWidgets('calls onFinished when the session ends', (tester) async {
+  testWidgets('calls onFinished when the timer-driven session ends', (
+    tester,
+  ) async {
     final controller = GameSessionController(schedule: EventSchedule.buildDefault());
     GameSessionController? finishedController;
 
@@ -31,8 +33,7 @@ void main() {
       ),
     );
 
-    controller.advanceToSecond(45);
-    await tester.pump();
+    await tester.pump(const Duration(seconds: 45));
 
     expect(finishedController, same(controller));
   });

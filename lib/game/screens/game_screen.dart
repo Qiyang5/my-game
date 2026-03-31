@@ -49,6 +49,8 @@ class _GameScreenState extends State<GameScreen> {
     }
 
     _didFinish = true;
+    _timer?.cancel();
+    _timer = null;
     widget.onFinished(widget.controller);
   }
 
