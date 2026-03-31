@@ -73,7 +73,7 @@ class _AppShellState extends State<AppShell> {
                 ),
                 const SizedBox(height: 12),
                 const Text(
-                  '45 秒内顶住工位灾难，在一团乱桌面里把老板巡逻、消息轰炸和咖啡翻车全都压回去。',
+                  '45 秒内顶住工位灾难，在一团乱桌面里把老板巡逻、消息轰炸、外卖电话和系统报错全都压回去。',
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 12),
