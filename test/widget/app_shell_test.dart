@@ -7,7 +7,7 @@ void main() {
     await tester.pumpWidget(const WorkstationSurvivalApp());
 
     expect(find.text('工位求生'), findsOneWidget);
-    expect(find.widgetWithText(ElevatedButton, '开始摸鱼求生'), findsOneWidget);
-    expect(find.textContaining('45 秒内活过老板巡逻'), findsOneWidget);
+    expect(find.widgetWithText(ElevatedButton, '开始工位求生'), findsOneWidget);
+    expect(find.textContaining('45 秒内顶住工位灾难'), findsOneWidget);
   });
 }

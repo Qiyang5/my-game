@@ -73,13 +73,18 @@ class _AppShellState extends State<AppShell> {
                 ),
                 const SizedBox(height: 12),
                 const Text(
-                  '45 秒内活过老板巡逻、群消息轰炸和临时会议。',
+                  '45 秒内顶住工位灾难，在一团乱桌面里把老板巡逻、消息轰炸和咖啡翻车全都压回去。',
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  '看准提示出手：轻点灭火、长按稳住、拖拽救场。',
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 24),
                 ElevatedButton(
                   onPressed: _startGame,
-                  child: const Text('开始摸鱼求生'),
+                  child: const Text('开始工位求生'),
                 ),
               ],
             ),
