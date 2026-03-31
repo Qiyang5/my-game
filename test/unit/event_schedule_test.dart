@@ -38,4 +38,18 @@ void main() {
     expect(schedule[4].inputType, GameInputType.drag);
     expect(schedule[4].isHighPressure, isTrue);
   });
+
+  test('delivery call event exposes a semantic action label', () {
+    final event = EventSchedule.buildDefault()
+        .firstWhere((item) => item.type == GameEventType.deliveryCall);
+
+    expect(event.primaryActionLabel, '接电话');
+  });
+
+  test('boss patrol event exposes the approved semantic action label', () {
+    final event = EventSchedule.buildDefault()
+        .firstWhere((item) => item.type == GameEventType.bossPatrol);
+
+    expect(event.primaryActionLabel, '按住装忙');
+  });
 }

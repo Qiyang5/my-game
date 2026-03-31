@@ -19,6 +19,8 @@ class GameEvent {
     required this.deadlineSecond,
     required this.inputType,
     required this.label,
+    required this.primaryActionLabel,
+    this.secondaryLabel,
     this.isHighPressure = false,
   });
 
@@ -27,5 +29,7 @@ class GameEvent {
   final int deadlineSecond;
   final GameInputType inputType;
   final String label;
+  final String primaryActionLabel;
+  final String? secondaryLabel;
   final bool isHighPressure;
 }
