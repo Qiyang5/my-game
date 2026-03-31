@@ -1,4 +1,5 @@
 import 'package:my_game/game/models/game_event.dart';
+import 'package:my_game/game/models/game_result.dart';
 import 'package:my_game/game/session/game_session_state.dart';
 
 class GameSessionController {
@@ -72,6 +73,31 @@ class GameSessionController {
       score: _state.score + (activeEvent.isHighPressure ? 15 : 10),
       completedEvents: _state.completedEvents + 1,
       clearActiveEvent: true,
+    );
+  }
+
+  void submitTap() => submit(GameInputType.tap);
+  void submitLongPress() => submit(GameInputType.longPress);
+  void submitDrag() => submit(GameInputType.drag);
+
+  GameResult buildResult({
+    required bool isNewHighScore,
+    required int bestScore,
+  }) {
+    final survivedSeconds = 45 - _state.remainingSeconds;
+    final title = _state.score >= 60
+        ? '摸鱼艺术家'
+        : (_state.score >= 30 ? '背锅特种兵' : '工位实习生');
+    final summary = '你今天成功混过了 ${_state.completedEvents} 次职场危机。';
+
+    return GameResult(
+      score: _state.score,
+      survivedSeconds: survivedSeconds,
+      completedEvents: _state.completedEvents,
+      title: title,
+      summary: summary,
+      isNewHighScore: isNewHighScore,
+      bestScore: bestScore,
     );
   }
 

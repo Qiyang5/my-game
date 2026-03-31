@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:my_game/game/engine/event_schedule.dart';
+import 'package:my_game/game/models/game_result.dart';
 import 'package:my_game/game/screens/game_screen.dart';
 import 'package:my_game/game/session/game_session_controller.dart';
+import 'package:my_game/results/result_screen.dart';
+import 'package:my_game/storage/high_score_store.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({super.key});
@@ -11,25 +14,41 @@ class AppShell extends StatefulWidget {
 }
 
 class _AppShellState extends State<AppShell> {
-  bool _inGame = false;
+  final HighScoreStore _highScoreStore = HighScoreStore();
   GameSessionController? _controller;
+  GameResult? _lastResult;
 
   void _startGame() {
     setState(() {
       _controller = GameSessionController(schedule: EventSchedule.buildDefault());
-      _inGame = true;
+      _lastResult = null;
     });
   }
 
-  void _finishGame(GameSessionController _) {
+  Future<void> _finishGame(GameSessionController controller) async {
+    final isNewHighScore = await _highScoreStore.writeIfHigher(
+      controller.state.score,
+    );
+    final bestScore = await _highScoreStore.readBestScore();
+
     setState(() {
-      _inGame = false;
+      _lastResult = controller.buildResult(
+        isNewHighScore: isNewHighScore,
+        bestScore: bestScore,
+      );
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_inGame && _controller != null) {
+    if (_lastResult != null) {
+      return ResultScreen(
+        result: _lastResult!,
+        onRestart: _startGame,
+      );
+    }
+
+    if (_controller != null) {
       return GameScreen(
         controller: _controller!,
         onFinished: _finishGame,
