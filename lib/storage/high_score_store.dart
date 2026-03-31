@@ -12,7 +12,6 @@ class HighScoreStore {
     final preferences = await SharedPreferences.getInstance();
     final current = preferences.getInt(_key) ?? 0;
     if (score <= current) return false;
-    await preferences.setInt(_key, score);
-    return true;
+    return preferences.setInt(_key, score);
   }
 }

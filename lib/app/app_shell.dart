@@ -31,6 +31,10 @@ class _AppShellState extends State<AppShell> {
     );
     final bestScore = await _highScoreStore.readBestScore();
 
+    if (!mounted) {
+      return;
+    }
+
     setState(() {
       _lastResult = controller.buildResult(
         isNewHighScore: isNewHighScore,
