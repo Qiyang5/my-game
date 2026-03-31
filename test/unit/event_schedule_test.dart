@@ -45,4 +45,11 @@ void main() {
 
     expect(event.primaryActionLabel, '接电话');
   });
+
+  test('boss patrol event exposes the approved semantic action label', () {
+    final event = EventSchedule.buildDefault()
+        .firstWhere((item) => item.type == GameEventType.bossPatrol);
+
+    expect(event.primaryActionLabel, '按住装忙');
+  });
 }

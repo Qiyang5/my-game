@@ -46,7 +46,7 @@ class EventSchedule {
         deadlineSecond: 36,
         inputType: GameInputType.drag,
         label: '老板正在靠近你的工位',
-        primaryActionLabel: '拖走摸鱼页',
+        primaryActionLabel: '按住装忙',
         secondaryLabel: '把危险窗口藏起来',
         isHighPressure: true,
       ),
