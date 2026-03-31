@@ -5,17 +5,30 @@ import 'package:my_game/game/screens/game_screen.dart';
 import 'package:my_game/game/session/game_session_controller.dart';
 
 void main() {
-  testWidgets('renders timer, score, and active event label', (tester) async {
+  testWidgets('shows the desk scene with phone and computer areas', (tester) async {
     final controller = GameSessionController(schedule: EventSchedule.buildDefault());
-    controller.advanceToSecond(3);
+    controller.advanceToSecond(14);
 
     await tester.pumpWidget(
       MaterialApp(home: GameScreen(controller: controller, onFinished: (_) {})),
     );
 
-    expect(find.text('剩余 42 秒'), findsOneWidget);
-    expect(find.textContaining('群里突然有人'), findsOneWidget);
-    expect(find.text('分数 0'), findsOneWidget);
+    expect(find.text('工位桌面'), findsOneWidget);
+    expect(find.text('手机'), findsOneWidget);
+    expect(find.textContaining('外卖骑手'), findsOneWidget);
+    expect(find.text('接电话'), findsOneWidget);
+  });
+
+  testWidgets('shows boss warning overlay for boss patrol event', (tester) async {
+    final controller = GameSessionController(schedule: EventSchedule.buildDefault());
+    controller.advanceToSecond(33);
+
+    await tester.pumpWidget(
+      MaterialApp(home: GameScreen(controller: controller, onFinished: (_) {})),
+    );
+
+    expect(find.textContaining('老板正在靠近'), findsOneWidget);
+    expect(find.text('按住装忙'), findsOneWidget);
   });
 
   testWidgets('calls onFinished when the timer-driven session ends', (

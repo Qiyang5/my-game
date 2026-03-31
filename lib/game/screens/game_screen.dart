@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:my_game/game/session/game_session_controller.dart';
-import 'package:my_game/game/widgets/event_panel.dart';
+import 'package:my_game/game/widgets/desk_scene.dart';
 import 'package:my_game/game/widgets/game_hud.dart';
 
 class GameScreen extends StatefulWidget {
@@ -100,7 +100,7 @@ class _GameScreenState extends State<GameScreen> {
             const SizedBox(height: 24),
             Expanded(
               child: Center(
-                child: EventPanel(
+                child: DeskScene(
                   event: state.activeEvent,
                   onTapAction: _submitTap,
                   onLongPressAction: _submitLongPress,
