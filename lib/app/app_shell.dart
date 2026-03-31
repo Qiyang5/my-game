@@ -1,10 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:my_game/game/engine/event_schedule.dart';
+import 'package:my_game/game/screens/game_screen.dart';
+import 'package:my_game/game/session/game_session_controller.dart';
 
-class AppShell extends StatelessWidget {
+class AppShell extends StatefulWidget {
   const AppShell({super.key});
 
   @override
+  State<AppShell> createState() => _AppShellState();
+}
+
+class _AppShellState extends State<AppShell> {
+  bool _inGame = false;
+  GameSessionController? _controller;
+
+  void _startGame() {
+    setState(() {
+      _controller = GameSessionController(schedule: EventSchedule.buildDefault());
+      _inGame = true;
+    });
+  }
+
+  void _finishGame(GameSessionController _) {
+    setState(() {
+      _inGame = false;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (_inGame && _controller != null) {
+      return GameScreen(
+        controller: _controller!,
+        onFinished: _finishGame,
+      );
+    }
+
     return Scaffold(
       body: SafeArea(
         child: Center(
@@ -24,7 +55,7 @@ class AppShell extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: _startGame,
                   child: const Text('开始摸鱼求生'),
                 ),
               ],
