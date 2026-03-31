@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:my_game/game/engine/event_schedule.dart';
 import 'package:my_game/game/screens/game_screen.dart';
 import 'package:my_game/game/session/game_session_controller.dart';
+import 'package:my_game/game/widgets/game_hud.dart';
 
 void main() {
   testWidgets('shows the desk scene with phone and computer areas', (tester) async {
@@ -48,6 +49,31 @@ void main() {
     expect(controller.state.score, 15);
   });
 
+  testWidgets('shows a red danger treatment when boss patrol is active', (
+    tester,
+  ) async {
+    final controller = GameSessionController(
+      schedule: EventSchedule.buildDefault(),
+    );
+    controller.advanceToSecond(33);
+    controller.advanceToSecond(35);
+
+    await tester.pumpWidget(
+      MaterialApp(home: GameScreen(controller: controller, onFinished: (_) {})),
+    );
+
+    expect(find.textContaining('老板正在靠近'), findsOneWidget);
+
+    final dangerBar = tester.widget<LinearProgressIndicator>(
+      find.descendant(
+        of: find.byType(GameHud),
+        matching: find.byType(LinearProgressIndicator),
+      ),
+    );
+
+    expect(dangerBar.color, const Color(0xFFD92D20));
+  });
+
   testWidgets('calls onFinished when the timer-driven session ends', (
     tester,
   ) async {
@@ -66,5 +92,23 @@ void main() {
     await tester.pump(const Duration(seconds: 45));
 
     expect(finishedController, same(controller));
+  });
+
+  testWidgets('timer-driven run calls onFinished exactly once', (tester) async {
+    final controller = GameSessionController(schedule: EventSchedule.buildDefault());
+    var finishCount = 0;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: GameScreen(
+          controller: controller,
+          onFinished: (_) => finishCount += 1,
+        ),
+      ),
+    );
+
+    await tester.pump(const Duration(seconds: 46));
+
+    expect(finishCount, 1);
   });
 }

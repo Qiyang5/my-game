@@ -20,6 +20,8 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
+  static const Color _dangerColor = Color(0xFFD92D20);
+
   Timer? _timer;
   int _elapsed = 0;
   bool _didFinish = false;
@@ -85,6 +87,8 @@ class _GameScreenState extends State<GameScreen> {
   @override
   Widget build(BuildContext context) {
     final state = widget.controller.state;
+    final activeEvent = state.activeEvent;
+    final isHighPressure = activeEvent?.isHighPressure ?? false;
 
     return Scaffold(
       appBar: AppBar(title: const Text('今日工位战况')),
@@ -96,15 +100,57 @@ class _GameScreenState extends State<GameScreen> {
               remainingSeconds: state.remainingSeconds,
               survivalValue: state.survivalValue,
               score: state.score,
+              isDangerMode: isHighPressure,
             ),
+            if (isHighPressure) ...[
+              const SizedBox(height: 12),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                decoration: BoxDecoration(
+                  color: _dangerColor.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: _dangerColor, width: 2),
+                ),
+                child: Text(
+                  '高压警报：立即处理当前危机',
+                  style: const TextStyle(
+                    color: _dangerColor,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
+            ],
             const SizedBox(height: 24),
             Expanded(
-              child: Center(
-                child: DeskScene(
-                  event: state.activeEvent,
-                  onTapAction: _submitTap,
-                  onLongPressAction: _submitLongPress,
-                  onDragAction: _submitDrag,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 180),
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(28),
+                  border: Border.all(
+                    color: isHighPressure
+                        ? _dangerColor
+                        : Colors.transparent,
+                    width: 3,
+                  ),
+                  boxShadow: isHighPressure
+                      ? [
+                          BoxShadow(
+                            color: _dangerColor.withValues(alpha: 0.16),
+                            blurRadius: 28,
+                            spreadRadius: 2,
+                          ),
+                        ]
+                      : const [],
+                ),
+                child: Center(
+                  child: DeskScene(
+                    event: activeEvent,
+                    onTapAction: _submitTap,
+                    onLongPressAction: _submitLongPress,
+                    onDragAction: _submitDrag,
+                  ),
                 ),
               ),
             ),
